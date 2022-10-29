@@ -10,6 +10,7 @@ const users = [
 ]
 
 app.use(cors());
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send('This is Server Project')
@@ -17,6 +18,15 @@ app.get('/', (req, res) => {
 
 app.get('/users', (req, res) => {
     res.send(users)
+})
+
+app.post('/users', (req, res) => {
+    console.log('Post API callled');
+    const user = req.body;
+    user.id = users.length + 1;
+    users.push(user);
+    console.log(user);
+    res.send(user)
 })
 
 
