@@ -19,7 +19,15 @@ app.get('/', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-    res.send(users)
+    if (req.query.name) {
+        const search = req.query.name;
+        const filltered = users.filter(usr => usr.name.toLocaleLowerCase().indexOf(search))
+        res.send(filltered)
+    }
+    else {
+        res.send(users)
+    }
+
 })
 
 // userName: dbuser1
@@ -31,19 +39,38 @@ const uri = "mongodb+srv://dbuser1:IDdMqcq21tCLhYhy@cluster0.dfmvdpa.mongodb.net
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
+    try {
+        const userCollection = client.db('simpleNoNode').collection('users');
+        const user = { name: ' Sharif', email: 'sharif@gmail.com' }
 
+        app.post('/users', async (req, res) => {
+            console.log('Post API callled');
+            const user = req.body;
+
+            // users.push(user);
+            // console.log(user);
+            const result = await userCollection.insertOne(user);
+            console.log(result);
+            user.id = result.insertedId;
+            res.send(user)
+        })
+    }
+    finally {
+
+    }
 }
 
 run().catch(err => console.log(err))
 
-app.post('/users', (req, res) => {
-    console.log('Post API callled');
-    const user = req.body;
-    user.id = users.length + 1;
-    users.push(user);
-    console.log(user);
-    res.send(user)
-})
+
+// app.post('/users', (req, res) => {
+//     console.log('Post API callled');
+//     const user = req.body;
+//     user.id = users.length + 1;
+//     users.push(user);
+//     console.log(user);
+//     res.send(user)
+// })
 
 
 app.listen(port, () => {
