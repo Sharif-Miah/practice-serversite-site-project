@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
@@ -16,9 +17,24 @@ app.get('/', (req, res) => {
     res.send('This is Server Project')
 })
 
+
 app.get('/users', (req, res) => {
     res.send(users)
 })
+
+// userName: dbuser1
+// password: IDdMqcq21tCLhYhy
+
+
+
+const uri = "mongodb+srv://dbuser1:IDdMqcq21tCLhYhy@cluster0.dfmvdpa.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+async function run() {
+
+}
+
+run().catch(err => console.log(err))
 
 app.post('/users', (req, res) => {
     console.log('Post API callled');
